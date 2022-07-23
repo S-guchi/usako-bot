@@ -1,4 +1,5 @@
 .*
 !.gitignore
 .venv/
+usako-bot-db/
 usako-bot.code-workspace

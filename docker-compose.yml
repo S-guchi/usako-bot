@@ -1,0 +1,27 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:8.0
+    command: mysqld --character-set-server=utf8mb4
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: usako-bot
+    platform: linux/x86_64
+    volumes:
+      - ./usako-bot-db:/var/lib/mysql
+    ports:
+      - '3306:3306'
+    restart: always
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD
+  api:
+    build: ./usako-api
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./usako-api:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
