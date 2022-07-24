@@ -2,4 +2,5 @@
 !.gitignore
 .venv/
 usako-bot-db/
+__pycache__/
 usako-bot.code-workspace
