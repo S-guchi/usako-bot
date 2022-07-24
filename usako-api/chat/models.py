@@ -1,5 +1,5 @@
 from django.db import models
-from config.models import Space
+from accounts.models import Space
 
 
 class Chat(models.Model):
