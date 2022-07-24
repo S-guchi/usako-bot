@@ -1,5 +1,3 @@
-from statistics import mode
-from django import db
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
@@ -34,7 +32,6 @@ class UserManager(BaseUserManager):
             nickname=nickname,
             space=space,
         )
-        user.is_admin = True
         user.save(using=self._db)
         return user
 
