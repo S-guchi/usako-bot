@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
@@ -36,21 +37,11 @@ class account(RetrieveUpdateDestroyAPIView):
             )
 
     def put(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
         try:
-            line_id = request.data["line_id"]
-            nickname = request.data["nickname"]
-            space = request.data["space"]
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-            if space is "":
-                space = None
-
-            User.objects.create(
-                line_id=line_id,
-                nickname=nickname,
-                space=space,
-            )
+            serializer.save()
             return Response(
                 serializer.data,
                 status=status.HTTP_200_OK,
@@ -63,7 +54,28 @@ class account(RetrieveUpdateDestroyAPIView):
             )
 
     def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+        # https://qiita.com/aja_min/items/a84b00c74225e41e7da5
+        try:
+
+            user = get_object_or_404(User, line_id=request.data["line_id"])
+
+            serializer = self.get_serializer(
+                instance=user, data=request.data, partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+
+            serializer.save()
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception:
+            return Response(
+                data={"error-message": "不明なエラーが発生しました。"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
