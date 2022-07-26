@@ -8,7 +8,7 @@ from .models import Space, User
 from .serializers import UserSerializer
 
 
-class account(RetrieveUpdateDestroyAPIView):
+class CrudAccount(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):

@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import account
+from .views import CrudAccount
 
 urlpatterns = [
-    path("v1", account.as_view()),
+    path("v1/", CrudAccount.as_view()),
 ]
