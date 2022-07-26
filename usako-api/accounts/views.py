@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, exceptions
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from django.db import transaction
-
+import traceback
 from .models import Space, User
 from .serializers import UserSerializer
 
@@ -27,10 +27,16 @@ class account(RetrieveUpdateDestroyAPIView):
             serializer = UserSerializer(user)
             return Response(
                 serializer.data,
-                status=status.HTTP_200_OK,
+                status=status.HTTP_201_CREATED,
+            )
+        except User.DoesNotExist:
+            return Response(
+                data={"error-message": "ユーザーが見つかりませんでした。"},
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         except Exception:
+            print(traceback.format_exc())
             return Response(
                 data={"error-message": "不明なエラーが発生しました。"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -46,8 +52,16 @@ class account(RetrieveUpdateDestroyAPIView):
                 serializer.data,
                 status=status.HTTP_200_OK,
             )
+        except exceptions.ValidationError as e:
+            print(traceback.format_exc())
+            return Response(
+                data={"error-message": e.detail},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
+            # return Response()
         except Exception:
+            print(traceback.format_exc())
             return Response(
                 data={"error-message": "不明なエラーが発生しました。"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -72,10 +86,26 @@ class account(RetrieveUpdateDestroyAPIView):
             )
 
         except Exception:
+            print(traceback.format_exc())
             return Response(
                 data={"error-message": "不明なエラーが発生しました。"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+        try:
+
+            user = get_object_or_404(User, line_id=request.query_params["line_id"])
+
+            user.delete()
+
+            return Response(
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception:
+            print(traceback.format_exc())
+            return Response(
+                data={"error-message": "不明なエラーが発生しました。"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
