@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
 from rest_framework import status, exceptions
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.response import Response
 from django.db import transaction
 import traceback
@@ -9,7 +9,7 @@ from .models import Space, User
 from .serializers import UserSerializer, SpaceSerializer
 
 
-class CrudAccount(RetrieveUpdateDestroyAPIView):
+class CrudUser(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
@@ -219,3 +219,12 @@ class CrudSpace(RetrieveUpdateDestroyAPIView):
                 data={"error-message": "不明なエラーが発生しました。"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+class LinkAccountSpace(UpdateAPIView):
+    serializer_class = SpaceSerializer
+
+    def patch(self, request, *args, **kwargs):
+
+        return self.partial_update(request, *args, **kwargs)
+                     
