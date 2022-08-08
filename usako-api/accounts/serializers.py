@@ -19,3 +19,9 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = "__all__"
         read_only_fields = ("id",)
+
+
+class LinkAccountSpaceSerializer(serializers.Serializer):
+    line_id = serializers.CharField(max_length=128)
+    space_name = serializers.CharField(max_length=128)
+    password = serializers.CharField(max_length=128)

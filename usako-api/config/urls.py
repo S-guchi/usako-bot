@@ -1,6 +1,6 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path("account/", include("accounts.urls")),
+    path("account/v1/", include("accounts.urls")),
     path("chat/", include("chat.urls")),
 ]
