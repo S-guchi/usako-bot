@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import CrudAccount, CrudSpace
+from .views import CrudUser, CrudSpace, LinkAccountSpace
 
 urlpatterns = [
-    path("v1/account", CrudAccount.as_view()),
-    path("v1/space", CrudSpace.as_view()),
+    path("user", CrudUser.as_view()),
+    path("space", CrudSpace.as_view()),
+    path("linkspace", LinkAccountSpace.as_view()),
 ]
